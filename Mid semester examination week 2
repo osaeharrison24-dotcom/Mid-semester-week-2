@@ -1,0 +1,79 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+// This struct links a student to their status for a specific session
+struct AttendanceRecord {
+    std::string studentIndex;
+    std::string status; [span_3](start_span)// "Present", "Absent", or "Late"[span_3](end_span)
+};
+
+class AttendanceSession {
+private:
+    std::string courseCode;
+    std::string date;
+    std::string startTime;
+    int duration;
+    std::vector<AttendanceRecord> records;
+
+public:
+    [span_4](start_span)// Constructor to initialize a session[span_4](end_span)
+    AttendanceSession(std::string code, std::string d, std::string time, int dur)
+        : courseCode(code), date(d), startTime(time), duration(dur) {}
+
+    [span_5](start_span)// Display session details for the user[span_5](end_span)
+    void displaySessionInfo() const {
+        std::cout << "\n--- Active Session Details ---" << std::endl;
+        std::cout << "Course: " << courseCode << "\nDate: " << date 
+                  << "\nStart Time: " << startTime << "\nDuration: " << duration << " hour(s)" << std::endl;
+    }
+
+    [span_6](start_span)// Getters needed for file naming in Week 4[span_6](end_span)
+    std::string getCourseCode() const { return courseCode; }
+    std::string getDate() const { return date; }
+};
+
+int main() {
+    std::vector<Student> studentList; // From Week 1
+    AttendanceSession* currentSession = nullptr; 
+    int choice;
+
+    do {
+        std::cout << "\n=== DIGITAL ATTENDANCE SYSTEM ===" << std::endl;
+        std::cout << "1. Register Student (Wk 1)" << std::endl;
+        std::cout << "2. View All Students (Wk 1)" << std::endl;
+        std::cout << "3. Create New Lecture Session (Wk 2)" << std::endl;
+        std::cout << "4. View Current Session Info (Wk 2)" << std::endl;
+        std::cout << "0. Exit" << std::endl;
+        std::cout << "Enter Choice: ";
+        std::cin >> choice;
+        std::cin.ignore(); // Essential to clear the buffer for getline
+
+        switch(choice) {
+            case 3: {
+                std::string code, date, time;
+                int dur;
+                std::cout << "Enter Course Code (e.g., EEE227): "; std::getline(std::cin, code);
+                std::cout << "Enter Date (YYYY-MM-DD): "; std::getline(std::cin, date);
+                std::cout << "Enter Start Time: "; std::getline(std::cin, time);
+                std::cout << "Enter Duration (hours): "; std::cin >> dur;
+
+                [span_9](start_span)// Create a new session object[span_9](end_span)
+                if (currentSession != nullptr) delete currentSession;
+                currentSession = new AttendanceSession(code, date, time, dur);
+                std::cout << "\nSession created successfully!" << std::endl;
+                break;
+            }
+            case 4:
+                if (currentSession) {
+                    currentSession->displaySessionInfo();
+                } else {
+                    std::cout << "\nNo active session found. Create one first." << std::endl;
+                }
+                break;
+        }
+    } while (choice != 0);
+
+    delete currentSession; // Clean up memory before exit
+    return 0;
+}
